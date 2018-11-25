@@ -1,0 +1,66 @@
+---
+title: "STAT 4003 Final Project"
+output: pdf_document
+author: "Coles,Mai,Mehrabi,Tabler"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(here)
+library(scales)
+library(knitr)
+source(here('R','subsample.R'))
+```
+link to comic Characters: \href{https://github.com/rfordatascience/tidytuesday/blob/master/data/2018-05-29/week9_comic_characters.csv}{here} 
+
+link to parking date: \href{https://www.kaggle.com/cityofLA/los-angeles-parking-citations#parking-citations.csv}{here}
+
+
+```{r}
+#datcomic<-read.csv(here('project','tidytuesday-comic.csv'))
+#datpark<-read.csv(here('project','parking-citations.csv'))
+```
+
+There are a tone of data points in the parking data so I subsampled 100000 data points  using subsample code. We can use the smaller data set to test out  the code and develop statistical hypothesys.
+
+```{r}
+n=100000
+smalldat<- datpark[sample(1:nrow(datpark), n, replace=FALSE),]
+write.csv(smalldat,file=here('project','parking-sub-dat.csv'))
+smalldat<-read.csv(here('project','parking-sub-dat.csv'))
+```
+
+```{r}
+ggplot(data=smalldat,aes(smalldat$Issue.time))+
+geom_histogram(bins=24)+
+xlab('time(hhmm)')
+
+#lm(smalldat$Color~dat2$Make)
+#dat$Issue.time
+```
+
+
+```{r}
+#na.omit deletes any field that hase 'NA' as value. in this case the value "date" only
+#keeps the fields in Issue.Date of the subsample that have a value and are not 'NA'.
+date<-na.omit(smalldat$Issue.Date)
+#gsub substitues the characters in this case the time ('T00:00:00') with nothing ('').
+#we are using this code to delete those part form the text.
+date<-gsub('T00:00:00','',date)
+date<-as.Date(date,format="%Y-%m-%d")
+
+
+ggplot(data=NULL,aes(x=date))+
+geom_histogram(bins=365)+
+# to see more date formats check the link below
+# https://www.statmethods.net/input/dates.html
+scale_x_date(labels=date_format("%b"),breaks = "1 month",
+# to change the range change the date values for all of 2017 you can use:
+#limits=c(as.Date("2017-01-1"),as.Date("2018-01-01")))
+limits=c(as.Date("2017-01-1"),as.Date("2018-01-01")))+
+xlab('date(m)')
+#opts(axis.text.x = theme_text(angle=90))
+```
+
+
