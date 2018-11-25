@@ -28,8 +28,13 @@ There are a tone of data points in the parking data so I subsampled 100000 data 
 n=100000
 smalldat<- datpark[sample(1:nrow(datpark), n, replace=FALSE),]
 write.csv(smalldat,file=here('project','parking-sub-dat.csv'))
+```
+
+```{r}
+# for our purposes we can start here. 
 smalldat<-read.csv(here('project','parking-sub-dat.csv'))
 ```
+
 
 ```{r}
 ggplot(data=smalldat,aes(smalldat$Issue.time))+
